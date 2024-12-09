@@ -34,7 +34,8 @@ def j_velocity_calc(dict_):
     return j, nx_av
 
 def v1_velocity_calc(dict_):
-   V1 = [math.sqrt(2 * data.g * (nx_av_value - math.sin(teta)) * L1_value) for nx_av_value, teta, L1_value in zip(dict_['nx_av'], data.teta, dict_['L1'])]
+   V1 = [math.sqrt(2 * data.g * (nx_av_value - math.sin(math.radians(teta))) * L1_value)
+         for nx_av_value, teta, L1_value in zip(dict_['nx_av'], data.teta, dict_['L1'])]
    return V1
 
 def t1_calc(dict_):
@@ -53,23 +54,23 @@ def l_as_calc(dict_):
     # L_as = [1 / nx_av_value * ((data.V2 ** 2 - V1_value ** 2) / (2 * data.g) + data.H2 - data.H1)
     #         for nx_av_value, V1_value in zip(dict_['nx_av'], dict_['V1'])]
     nx12 = [(nx1_value + nx2_value) / 2 for nx1_value, nx2_value in zip(nx1, nx2)]
-    L_as = [1 / nx12_value * ((data.V2 ** 2 - V1_value ** 2) / (2 * data.g) + data.H2 - data.H1)
+    L_d = [1 / nx12_value * ((data.V2 ** 2 - V1_value ** 2) / (2 * data.g) + data.H2 - data.H1)
             for nx12_value, V1_value in zip(nx12, dict_['V1'])]
-    return L_as
+    return L_d
 
-def show_plot(data_list, labels, teta):
+def show_plot(data_list, labels, xylabels, teta):
     """
     data_list: список переменных, которые нужно отобразить
     labels: список меток для графиков
     teta: массив значений по оси X (углы)
     """
     plt.figure(figsize=(10, 6))
-    for vars_, label_ in zip(data_list, labels):
+    for vars_, label_, in zip(data_list, labels):
         plt.plot(teta, vars_, label=label_, linewidth=2)
-    plt.xlabel("Angle (°)", fontsize=14, labelpad=10, color="darkred")
-    plt.ylabel("Force", fontsize=14, labelpad=10, color="darkblue")
-    plt.title("Multiple Variables on One Plot", fontsize=16, fontweight="bold", color="darkorange")
-    plt.legend(fontsize=12, loc="upper right")
+    plt.xlabel(xylabels[0], fontsize=14, labelpad=10, color="black")
+    plt.ylabel(xylabels[1], fontsize=14, labelpad=10, color="black")
+    plt.title("", fontsize=16, fontweight="bold", color="darkorange")
+    plt.legend(fontsize=12, loc="lower right")
     plt.grid(color="gray", linestyle="--", linewidth=0.5)
     plt.show()
 
@@ -80,8 +81,9 @@ if __name__ == "__main__":
     values['V1'] = v1_velocity_calc(values)
     values['t1'] = t1_calc(values)
     values['P2'], values['G2'] = forces_calc(values)
-    values['L_as'] = l_as_calc(values)
+    values['L_d'] = l_as_calc(values)
 
-    # show_plot([values['P2'], values['G2']], ["P2", "G2"], data.teta)
-    show_plot([values['L_as']], ["L_as"], data.teta)
-    print(values['L_as'])
+    show_plot([values['P2'], values['G2']], ["P2", "G2"], ["Angle, deg", "Force, N"], data.teta)
+    show_plot([values['j']], ["j"], ["Angle, deg", "Velocity, m/s"], data.teta)
+    show_plot([values['V1']], ["V1"], ["Angle, deg", "Velocity, m/s"], data.teta)
+    show_plot([values['L_d']], ["L_d"], ["Angle, deg", "Displacement, m"], data.teta)
