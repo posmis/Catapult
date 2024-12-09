@@ -1,3 +1,5 @@
+import pandas as pd
+
 # Исходные данные
 # Константы
 ro = 1.225 # кг/м^3
@@ -8,16 +10,24 @@ P = 9.5 * g # Н
 n = 8500 # об/мин
 
 # Самолет
-V = 21 # м/с
+V = 22 # м/с
 S = 0.68 # м^2
 m = 28 # кг
-Cya = 1.5413
-Cxa = 0.0059
-
 
 # Катапульта
-H = 1 # м
-teta = [5, 10, 15, 20, 25, 30, 35] # град
+H1 = 1 # м
+
 R = 200 # Н
 alpha_R = 0 # град
 alpha_P = 0 # град
+
+V2 = 1.2 * V # /с
+H2 = 10.7 # м
+
+
+data_file = "NACA23012_alpha_Cya_Cxa.csv"
+teta, Cya, Cxa = [], [], []
+df = pd.read_csv(data_file, sep=';')
+teta = df['teta'].tolist()
+Cya = df['Cya'].tolist()
+Cxa = df['Cxa'].tolist()
