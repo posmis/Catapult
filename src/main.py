@@ -61,8 +61,13 @@ def l_as_calc(dict_):
 def show_plot(data_list, labels, xylabels, teta, fill_conditions=None):
     plt.figure(figsize=(10, 6))
 
-    for vars_, label_ in zip(data_list, labels):
-        plt.plot(teta, vars_, label=label_, linewidth=2)
+    markers = ['o', '^']
+    for vars_, label_, marker_ in zip(data_list, labels, markers):
+        if len(data_list) > 1:
+            plt.plot(teta, vars_, linewidth=2)
+            plt.scatter(teta, vars_, label=label_, marker=marker_)
+        else:
+            plt.plot(teta, vars_, label=label_, linewidth=2)
 
     if fill_conditions:
         for condition in fill_conditions:
@@ -89,20 +94,9 @@ def show_plot(data_list, labels, xylabels, teta, fill_conditions=None):
 
 
 def save_arrays_to_excel_pandas(filename, arrays):
-    """
-    Сохраняет данные из списков массивов в файл Excel.
-
-    :param filename: Имя файла для сохранения (строка).
-    :param arrays: Список массивов одинаковой длины (список списков).
-    """
-    # Проверка, что массивы имеют одинаковую длину
     if not all(len(arr) == len(arrays[0]) for arr in arrays):
         raise ValueError("Все массивы должны иметь одинаковую длину.")
-
-    # Создаем DataFrame
     df = pd.DataFrame({f"Column {i + 1}": arr for i, arr in enumerate(arrays)})
-
-    # Сохраняем в Excel
     df.to_excel(filename, index=False)
     print(f"Данные успешно сохранены в {filename}")
 
@@ -143,8 +137,12 @@ if __name__ == "__main__":
     ]
 
     # save_arrays_to_excel_pandas("data.xlsx", [data.teta, values['j'], values['P2'], values['G2'], values['V1'], values['L_d']])
+    # show_plot([values['P2'], values['G2']], ["P2", "G2"], ["Angle, deg", "Force, N"], data.teta, fill_conditions)
+    # show_plot([values['j']], ["j"], ["Angle, deg", "Velocity, m/s"], data.teta)
+    # show_plot([values['V1']], ["V1"], ["Angle, deg", "Velocity, m/s"], data.teta)
+    # show_plot([values['L_d']], ["L_d"], ["Angle, deg", "Displacement, m"], data.teta)
 
-    show_plot([values['P2'], values['G2']], ["P2", "G2"], ["Angle, deg", "Force, N"], data.teta, fill_conditions)
-    show_plot([values['j']], ["j"], ["Angle, deg", "Velocity, m/s"], data.teta)
-    show_plot([values['V1']], ["V1"], ["Angle, deg", "Velocity, m/s"], data.teta)
-    show_plot([values['L_d']], ["L_d"], ["Angle, deg", "Displacement, m"], data.teta)
+    show_plot([values['P2'], values['G2']], ["P2", "G2"], ["$град$", "$Н$"], data.teta, fill_conditions)
+    show_plot([values['j']], ["j"], ["$град$", "$м/с^{2}$"], data.teta)
+    show_plot([values['V1']], ["V1"], ["$град$", "$м/с$"], data.teta)
+    show_plot([values['L_d']], ["Ld"], ["$град$", "$м$"], data.teta)
